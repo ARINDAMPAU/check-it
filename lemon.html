@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Elite Access System</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  font-family:Arial, sans-serif;
+  color:white;
+  overflow:hidden;
+}
+
+.top{
+  position:absolute;
+  top:20px;
+  width:90%;
+  left:5%;
+  text-align:center;
+  font-size:26px;
+  font-weight:bold;
+  word-wrap:break-word;
+}
+
+.bottom{
+  position:absolute;
+  bottom:20px;
+  width:90%;
+  left:5%;
+  text-align:center;
+  font-size:18px;
+  line-height:1.5;
+  word-wrap:break-word;
+}
+
+.container{
+  text-align:center;
+}
+
+input, select{
+  padding:8px 15px;
+  border:none;
+  border-radius:20px;
+  margin-top:10px;
+  text-align:center;
+}
+
+button{
+  margin-top:10px;
+  padding:8px 20px;
+  border:none;
+  border-radius:20px;
+  cursor:pointer;
+  background:#00c6ff;
+  color:white;
+  transition:0.3s;
+}
+
+button:hover{
+  background:#0072ff;
+}
+
+.typewriter{
+  display:inline-block;
+  overflow:hidden;
+  white-space:nowrap;
+  border-right:2px solid white;
+  animation:typing 3s steps(40,end), blink .7s infinite;
+}
+
+@keyframes typing{
+  from{width:0}
+  to{width:100%}
+}
+
+@keyframes blink{
+  50%{border-color:transparent}
+}
+</style>
+</head>
+
+<body>
+
+<div class="top" id="message"></div>
+<div class="bottom" id="bottomMessage"></div>
+
+<div class="container">
+  <input type="text" id="nameInput" placeholder="Enter your name">
+  <br>
+  <button onclick="checkName()">Submit</button>
+  <div id="extraArea"></div>
+</div>
+
+<script>
+
+const vipNames = [
+"debojyoti roychowdhury",
+"aritra das",
+"granthik mallick",
+"sahil sinha",
+"rahul ghosh",
+"soumyadeep dutta",
+"sushil kundu"
+];
+
+function splitIfOverflow(text){
+  const topEl = document.getElementById("message");
+  const bottomEl = document.getElementById("bottomMessage");
+
+  topEl.innerHTML = text;
+  bottomEl.innerHTML = "";
+
+  setTimeout(()=>{
+    if(topEl.scrollHeight > topEl.clientHeight){
+      let words = text.split(" ");
+      let half = Math.floor(words.length/2);
+      topEl.innerHTML = words.slice(0,half).join(" ");
+      bottomEl.innerHTML = words.slice(half).join(" ");
+    }
+  },50);
+}
+
+function typeTop(text){
+  document.getElementById("message").innerHTML =
+  `<div class="typewriter">${text}</div>`;
+}
+
+function typeBottomParagraph(text){
+  let el = document.getElementById("bottomMessage");
+  el.innerHTML="";
+  let i=0;
+  let interval=setInterval(()=>{
+    el.innerHTML += text.charAt(i);
+    i++;
+    if(i>=text.length) clearInterval(interval);
+  },40);
+}
+
+function clearBottom(){
+  document.getElementById("bottomMessage").innerHTML="";
+}
+
+function checkName(){
+  let name = document.getElementById("nameInput").value.trim().toLowerCase();
+  let extra = document.getElementById("extraArea");
+  extra.innerHTML="";
+  clearBottom();
+
+  if(vipNames.includes(name)){
+    splitIfOverflow("You are a VIP because you are closest friends of me");
+  }
+
+  else if(name === "arka paul"){
+    splitIfOverflow("Welcome sir verify it's you");
+    extra.innerHTML = `
+      <br><input type="password" id="pass" placeholder="Enter password">
+      <br><button onclick="verifyOwner()">Verify</button>`;
+  }
+
+  else if(name === "ananya singh"){
+    splitIfOverflow("Wait is that you?");
+    extra.innerHTML = `
+      <br>
+      <select id="day"><option value="">Day</option></select>
+      <select id="month"><option value="">Month</option></select>
+      <select id="year"><option value="">Year</option></select>
+      <br>
+      <button onclick="verifyBirth()">Verify</button>`;
+
+    populateDate();
+  }
+
+  else{
+    splitIfOverflow("Welcome! " + name +" to the Arka's Universe must follow '@arkaj.d.r.o' on instragram");
+    
+  }
+}
+
+function populateDate(){
+  const day=document.getElementById("day");
+  const month=document.getElementById("month");
+  const year=document.getElementById("year");
+
+  for(let i=1;i<=31;i++){
+    day.innerHTML += `<option value="${i}">${i}</option>`;
+  }
+
+  const months=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  months.forEach(m=>{
+    month.innerHTML += `<option value="${m}">${m}</option>`;
+  });
+
+  for(let y=1995;y<=2025;y++){
+    year.innerHTML += `<option value="${y}">${y}</option>`;
+  }
+}
+
+function verifyOwner(){
+  let pass = document.getElementById("pass").value;
+  if(pass === "041211as"){
+    document.getElementById("extraArea").innerHTML="";
+    clearBottom();
+    splitIfOverflow("Welcome, you are the owner of AU (Arka's Universe), Jay Hind Sir");
+  }
+}
+
+function verifyBirth(){
+  let day=document.getElementById("day").value;
+  let month=document.getElementById("month").value;
+  let year=document.getElementById("year").value;
+
+  if(day==="4" && month==="December" && year==="2011"){
+    document.getElementById("extraArea").innerHTML=`
+    <br><input type="text" id="blood" placeholder="Enter blood group">
+    <br><button onclick="verifyBlood()">Next</button>`;
+    splitIfOverflow("Let me verify you again enter blood group");
+  } else {
+    document.getElementById("extraArea").innerHTML="";
+    splitIfOverflow("no you are not the person I was thinking about 😔, btw Welcome! to the Arka's Universe must follow '@arkaj.d.r.o' on instragram");
+  }
+}
+
+function verifyBlood(){
+  let blood=document.getElementById("blood").value.trim().toUpperCase();
+
+  if(blood==="B+"){
+    document.getElementById("extraArea").innerHTML=`
+    <br><input type="text" id="nick" placeholder="Nickname owner gave you ">
+    <br><button onclick="verifyNick()">Final</button>`;
+    splitIfOverflow("What's the nickname owner gave you on instragram? (emojis not allowed)");
+  } else {
+    document.getElementById("extraArea").innerHTML="";
+    splitIfOverflow("no you are not the person I was thinking about 😔, btw Welcome! to the Arka's Universe must follow '@arkaj.d.r.o' on instragram");
+  }
+}
+
+function verifyNick(){
+  let nick=document.getElementById("nick").value.trim().toLowerCase();
+
+  if(nick==="penguin"){
+    document.getElementById("extraArea").innerHTML="";
+    splitIfOverflow("Welcome, you are the owner of the owner");
+    typeBottomParagraph(
+      "From the owner — I love you love you love you love you love you love you love you love you love you. You are my only owner 😭"
+    );
+  } else {
+    document.getElementById("extraArea").innerHTML="";
+    splitIfOverflow("no you are not the person I was thinking about 😔, btw Welcome! to the Arka's Universe must follow '@arkaj.d.r.o' on instragram");
+  }
+}
+
+</script>
+
+</body>
+</html>
